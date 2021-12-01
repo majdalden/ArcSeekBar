@@ -83,7 +83,7 @@ Just add following dependency in your module `build.gradle`:
 
 ```groovy
 dependencies {
-    compile 'com.github.marcinmoskala:ArcSeekBar:0.31'
+    implementation 'com.github.marcinmoskala:ArcSeekBar:0.31'
 }
 ```
 

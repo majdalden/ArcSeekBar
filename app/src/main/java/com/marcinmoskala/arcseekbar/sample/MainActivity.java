@@ -1,9 +1,10 @@
 package com.marcinmoskala.arcseekbar.sample;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.marcinmoskala.arcseekbar.ArcSeekBar;
 import com.marcinmoskala.arcseekbar.ProgressListener;

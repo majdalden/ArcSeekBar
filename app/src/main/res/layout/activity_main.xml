@@ -16,7 +16,7 @@
         android:padding="20dp"
         app:progressBackgroundColor="@color/sliderBack"
         app:progressBackgroundWidth="20dp"
-        app:progress="100"
+        app:progressValue="100"
         app:progressWidth="20dp"
         app:roundEdges="true" />
 
