@@ -2,16 +2,17 @@ package com.marcinmoskala.arcseekbar
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.LinearGradient
-import android.graphics.Paint
-import android.graphics.Shader
+import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
+import kotlin.math.atan2
+
 
 class ArcSeekBar @JvmOverloads constructor(
     context: Context,
@@ -45,7 +46,7 @@ class ArcSeekBar @JvmOverloads constructor(
         set(progress) {
             field = bound(0, progress, maxProgress)
             onProgressChangedListener?.invoke(progress)
-            drawData?.let { drawData = it.copy(progress = progress) }
+            drawData?.let { drawData = it.copy(progressValue = progress) }
             invalidate()
         }
 
@@ -81,7 +82,7 @@ class ArcSeekBar @JvmOverloads constructor(
             invalidate()
         }
 
-    private val thumb: Drawable = a?.getDrawable(R.styleable.ArcSeekBar_thumb)
+    private var thumb: Drawable = a?.getDrawable(R.styleable.ArcSeekBar_thumb)
         ?: ContextCompat.getDrawable(context, R.drawable.thumb)
         ?: ColorDrawable(progressBackgroundColor)
 
@@ -155,7 +156,25 @@ class ArcSeekBar @JvmOverloads constructor(
             thumbX + thumbHalfWidth,
             thumbY + thumbHalfHeight
         )
+//        val angleThumb = if (progressValue > maxProgress / 2) {
+//            -90F
+//        } else {
+//            90F
+//        }
+
+//        canvas.rotate(90F)
+        /*canvas.rotate(
+            angleThumb,
+            (thumbHalfWidth / 2).toFloat(),
+            (thumbHalfHeight / 2).toFloat()
+        )*/
+        /*val thumbTemp = ((thumb as? BitmapDrawable?) as? Bitmap?)?.rotate(90)
+        val thumbTemp2 = (thumb as? LayerDrawable?)?.rotate(90)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.DONUT && thumbTemp != null) {
+            thumb = BitmapDrawable(resources, thumbTemp)
+        }*/
         thumb.draw(canvas)
+
     }
 
     @SuppressLint("DrawAllocation")
@@ -229,10 +248,57 @@ class ArcSeekBar @JvmOverloads constructor(
     }
 
     private fun updateOnTouch(event: MotionEvent) {
+//        val x = event.x
+//        val y = event.y
+//        val angle = getAngle(x, y).toFloat()
         val progressFromClick =
             drawData?.progressFromClick(event.x, event.y, thumb.intrinsicHeight) ?: return
         isPressed = true
+
+//        thumb = if (progressFromClick > maxProgress / 2) {
+//            getRotateDrawable(thumb, -90F)
+//        } else {
+//            getRotateDrawable(thumb, 90F)
+//        }
         progressValue = progressFromClick
+    }
+
+    private fun getAngle(x: Double, y: Double): Double {
+        return 1.5 * Math.PI - atan2(
+            y,
+            x
+        ) //note the atan2 call, the order of paramers is y then x
+    }
+
+    private fun getAngle(x: Float, y: Float): Double {
+        return getAngle(x.toDouble(), y.toDouble())
+    }
+
+    private fun getRotateDrawable(bitmap: Bitmap, angle: Float): Drawable {
+        return object : BitmapDrawable(resources, bitmap) {
+            override fun draw(canvas: Canvas) {
+                canvas.save()
+                canvas.rotate(angle, (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat())
+                super.draw(canvas)
+                canvas.restore()
+            }
+        }
+    }
+
+    private fun getRotateDrawable(drawable: Drawable, angle: Float): Drawable {
+        val arD = arrayOf(drawable)
+        return object : LayerDrawable(arD) {
+            override fun draw(canvas: Canvas) {
+                canvas.save()
+                canvas.rotate(
+                    angle,
+                    (drawable.bounds.width() / 2).toFloat(),
+                    (drawable.bounds.height() / 2).toFloat()
+                )
+                super.draw(canvas)
+                canvas.restore()
+            }
+        }
     }
 
     override fun isEnabled(): Boolean = mEnabled
@@ -243,4 +309,17 @@ class ArcSeekBar @JvmOverloads constructor(
 
     fun <T, R> T?.useOrDefault(default: R, usage: T.(R) -> R) =
         if (this == null) default else usage(default)
+
+
+    infix fun Bitmap.rotate(degrees: Number): Bitmap? {
+        return Bitmap.createBitmap(
+            this,
+            0,
+            0,
+            width,
+            height,
+            Matrix().apply { postRotate(degrees.toFloat()) },
+            true
+        )
+    }
 }

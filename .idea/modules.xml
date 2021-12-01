@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ArcSeekBar.iml" filepath="$PROJECT_DIR$/.idea/modules/ArcSeekBar.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ArcSeekBar.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ArcSeekBar.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lib/ArcSeekBar.lib.iml" filepath="$PROJECT_DIR$/.idea/modules/lib/ArcSeekBar.lib.iml" />
+    </modules>
+  </component>
+</project>
