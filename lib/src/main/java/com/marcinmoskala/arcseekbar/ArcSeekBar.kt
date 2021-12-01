@@ -148,6 +148,13 @@ class ArcSeekBar @JvmOverloads constructor(
     }
 
     private fun ArcSeekBarData.drawThumb(canvas: Canvas) {
+//        val angleThumb = if (progressValue > maxProgress / 2) {
+//            -90F
+//        } else {
+//            90F
+//        }
+//        thumb = getRotateDrawable(thumb, angleThumb)
+
         val thumbHalfHeight = thumb.intrinsicHeight / 2
         val thumbHalfWidth = thumb.intrinsicWidth / 2
         thumb.setBounds(
@@ -156,11 +163,7 @@ class ArcSeekBar @JvmOverloads constructor(
             thumbX + thumbHalfWidth,
             thumbY + thumbHalfHeight
         )
-//        val angleThumb = if (progressValue > maxProgress / 2) {
-//            -90F
-//        } else {
-//            90F
-//        }
+
 
 //        canvas.rotate(90F)
         /*canvas.rotate(
@@ -173,6 +176,7 @@ class ArcSeekBar @JvmOverloads constructor(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.DONUT && thumbTemp != null) {
             thumb = BitmapDrawable(resources, thumbTemp)
         }*/
+//        canvas.rotate(angleThumb, thumbHalfWidth.toFloat(), thumbHalfHeight.toFloat())
         thumb.draw(canvas)
 
     }
@@ -290,6 +294,7 @@ class ArcSeekBar @JvmOverloads constructor(
         return object : LayerDrawable(arD) {
             override fun draw(canvas: Canvas) {
                 canvas.save()
+//                canvas.save(Canvas.MATRIX_SAVE_FLAG)
                 canvas.rotate(
                     angle,
                     (drawable.bounds.width() / 2).toFloat(),
